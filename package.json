@@ -1,0 +1,6 @@
+{
+  "name": "lab5_node_js",
+  "version": "1.0.0",
+  "main": "server.js",
+  "dependencies": {}
+}

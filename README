@@ -1,0 +1,26 @@
+Programowanie aplikacji w chmurze obliczeniowej
+SPRAWOZDANIE LABORATORIUM 5
+
+Temat zajęć: Wskazówki i dobre praktyki podczas tworzenia plików Dockerfile. Automatyczna kontrola poprawności działania aplikacji, Budowa obrazów metodą „od podstaw. Wieloetapowe budowanie obrazów"
+
+Użyte polecenia:
+Budowa obrazu (z wersją 2.0): docker build --build-arg VERSION=2.0 -t lab5_node_js .
+
+        Wynik: Obraz o nazwie lab5_node_js został pomyślnie zbudowany.
+
+    Uruchomienie kontenera: docker run -d -p 8080:80 --name lab5_container lab5_node_js
+
+    Weryfikacja działania: curl http://localhost:8080
+
+    Sprawdzenie stanu kontenera: docker inspect --format='{{.State.Health.Status}}' lab5_container
+        Wynik: healthy
+
+    docker ps -a --filter "name=lab5-container"
+
+------------------WYNIKI POLECEŃ ORAZ DZIAŁANIE APLIKACJI MOŻNA ZNALEŹĆ W ZAŁĄCZONYCH ZRZUTACH EKRANU-----------
+
+Podsumowanie:
+
+Wykorzystano dwuetapową budowę (Alpine → Nginx). Aplikacja wyświetla IP serwera, hostname oraz wersję (przekazywaną przez --build-arg).
+Healthcheck działa poprawnie.
+Całość zapakowana w minimalny obraz Docker (74.1MB).
