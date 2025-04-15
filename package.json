@@ -1,5 +1,5 @@
 {
-  "name": "lab5_node_js",
+  "name": "server-info",
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {}

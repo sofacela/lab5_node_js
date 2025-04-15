@@ -1,22 +1,26 @@
-FROM alpine:3.18 AS builder
+FROM node:18-alpine AS builder
 
-RUN apk add --no-cache nodejs npm curl
+WORKDIR /app
+COPY package.json ./
+RUN npm install
+COPY server.js ./
+
+FROM nginx:1.25-alpine
+
+RUN apk add --no-cache nodejs
+
+WORKDIR /app
+COPY --from=builder /app .
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 ARG VERSION=1.0
 ENV VERSION=$VERSION
 
-WORKDIR /app
-COPY package.json .
-RUN npm install
-COPY server.js .
+EXPOSE 80  
+EXPOSE 3000 
 
-RUN node server.js > /app/index.html
-
-FROM nginx:1.25-alpine
-
-COPY --from=builder /app/index.html /usr/share/nginx/html/
+CMD ["sh", "-c", "node server.js & nginx -g 'daemon off;'"]
 
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -f http://localhost/ || exit 1
-
-# Port 80 jest domyślnie eksponowany w obrazie Nginx

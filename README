@@ -23,4 +23,3 @@ Podsumowanie:
 
 Wykorzystano dwuetapową budowę (Alpine → Nginx). Aplikacja wyświetla IP serwera, hostname oraz wersję (przekazywaną przez --build-arg).
 Healthcheck działa poprawnie.
-Całość zapakowana w minimalny obraz Docker (74.1MB).
