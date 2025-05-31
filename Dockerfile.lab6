@@ -1,0 +1,31 @@
+# syntax=docker/dockerfile:1.2
+
+FROM alpine AS stage-1
+RUN apk add --no-cache openssh git
+RUN mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN --mount=type=ssh \
+    git clone git@github.com:sofacela/lab5_node_js.git /app
+
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY --from=stage-1 /app /app
+RUN npm install
+
+FROM nginx:1.25-alpine
+RUN apk add --no-cache nodejs
+
+WORKDIR /app
+COPY --from=builder /app .
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+ARG VERSION=1.0
+ENV VERSION=$VERSION
+
+EXPOSE 80
+EXPOSE 3000
+
+CMD ["sh", "-c", "node server.js & nginx -g 'daemon off;'"]
+
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
